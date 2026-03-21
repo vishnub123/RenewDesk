@@ -1,133 +1,198 @@
-<!-- FULL UPDATED SVG -->
-<!-- Improvements: spacing + smoother animation + glow -->
-
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400">
   <defs>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;800&amp;display=swap');
-
-      /* Pulse rings */
-      .ring1 { animation: ring-pulse 2.5s ease-in-out infinite; transform-origin: 200px 200px; }
-      .ring2 { animation: ring-pulse 2.5s ease-in-out infinite 0.4s; transform-origin: 200px 200px; }
-      .ring3 { animation: ring-pulse 2.5s ease-in-out infinite 0.8s; transform-origin: 200px 200px; }
-
-      @keyframes ring-pulse {
-        0%   { opacity: 0; r: 60px; }
-        30%  { opacity: 0.35; }
-        100% { opacity: 0; r: 130px; }
+      /* NO external imports — GitHub blocks them */
+      .ring1 { animation: rp 2.5s ease-in-out infinite 0s; transform-origin: 200px 200px; }
+      .ring2 { animation: rp 2.5s ease-in-out infinite 0.4s; transform-origin: 200px 200px; }
+      .ring3 { animation: rp 2.5s ease-in-out infinite 0.8s; transform-origin: 200px 200px; }
+      @keyframes rp {
+        0%   { opacity: 0; }
+        30%  { opacity: 0.4; }
+        100% { opacity: 0; }
       }
 
-      /* Smooth bell swing */
-      .bell-group {
-        animation: bell-sway 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        transform-origin: 200px 185px;
-      }
-
-      @keyframes bell-sway {
+      /* transform-origin = top of bell stem = hanging point */
+      .bell-group { animation: sw 3s ease-in-out infinite; transform-origin: 200px 164px; }
+      @keyframes sw {
         0%,100% { transform: rotate(0deg); }
-        15%     { transform: rotate(10deg); }
-        30%     { transform: rotate(-8deg); }
-        45%     { transform: rotate(6deg); }
+        15%     { transform: rotate(12deg); }
+        30%     { transform: rotate(-10deg); }
+        45%     { transform: rotate(7deg); }
         60%     { transform: rotate(-4deg); }
-        75%     { transform: rotate(2deg); }
+        80%     { transform: rotate(2deg); }
       }
 
-      /* Glow pulse */
-      .bell-glow {
-        animation: glow-pulse 2s ease-in-out infinite;
-      }
-
-      @keyframes glow-pulse {
-        0%,100% { opacity: 0.6; }
-        50%     { opacity: 1; }
-      }
-
-      /* Badge pop */
-      .badge { animation: badge-pop 3s ease-in-out infinite; transform-origin: 242px 158px; }
-
-      @keyframes badge-pop {
+      .badge { animation: bp 3s ease-in-out infinite; transform-origin: 233px 171px; }
+      @keyframes bp {
         0%,100% { transform: scale(1); }
-        20%     { transform: scale(1.25); }
+        20%     { transform: scale(1.3); }
         40%     { transform: scale(0.95); }
         60%     { transform: scale(1.1); }
-        80%     { transform: scale(1); }
       }
 
-      /* Fade up text */
-      .title-text  { animation: fade-up 0.9s ease forwards; opacity: 0; }
-      .sub-text    { animation: fade-up 0.9s ease 0.3s forwards; opacity: 0; }
-      .badge-row   { animation: fade-up 0.9s ease 0.6s forwards; opacity: 0; }
-
-      @keyframes fade-up {
-        from { opacity: 0; transform: translateY(18px); }
+      .title-text { animation: fu 1s ease 0.1s forwards; opacity: 0; }
+      .sub-text   { animation: fu 1s ease 0.35s forwards; opacity: 0; }
+      .tag-row    { animation: fu 1s ease 0.6s forwards; opacity: 0; }
+      @keyframes fu {
+        from { opacity: 0; transform: translateY(16px); }
         to   { opacity: 1; transform: translateY(0); }
       }
 
-      /* Dot animation */
-      .dot1 { animation: blink 1.6s infinite; }
-      .dot2 { animation: blink 1.6s infinite 0.3s; }
-      .dot3 { animation: blink 1.6s infinite 0.6s; }
-
-      @keyframes blink {
+      .dot1 { animation: bl 1.6s ease-in-out infinite 0s; }
+      .dot2 { animation: bl 1.6s ease-in-out infinite 0.3s; }
+      .dot3 { animation: bl 1.6s ease-in-out infinite 0.6s; }
+      @keyframes bl {
         0%,100% { opacity: 0.2; }
         50%     { opacity: 1; }
       }
+
+      .glow-ring { animation: gr 2s ease-in-out infinite; }
+      @keyframes gr {
+        0%,100% { opacity: 0.4; }
+        50%     { opacity: 0.9; }
+      }
     </style>
 
-    <!-- Glow -->
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="8"/>
-    </filter>
-
-    <!-- Background -->
-    <linearGradient id="bg">
-      <stop offset="0%" stop-color="#0a0f1a"/>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#0a0f1a"/>
+      <stop offset="60%"  stop-color="#0d1117"/>
       <stop offset="100%" stop-color="#071410"/>
     </linearGradient>
 
     <!-- Bell gradient -->
-    <linearGradient id="bellGrad">
-      <stop offset="0%" stop-color="#34d399"/>
+    <linearGradient id="bellGrad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#34d399"/>
       <stop offset="100%" stop-color="#059669"/>
     </linearGradient>
+
+    <!-- Soft glow filter — no external refs -->
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
 
   <!-- Background -->
   <rect width="1280" height="400" fill="url(#bg)"/>
 
-  <!-- Rings -->
-  <circle class="ring1" cx="200" cy="200" r="60" stroke="#10b981" fill="none"/>
-  <circle class="ring2" cx="200" cy="200" r="60" stroke="#10b981" fill="none"/>
-  <circle class="ring3" cx="200" cy="200" r="60" stroke="#10b981" fill="none"/>
+  <!-- Subtle dot grid -->
+  <g opacity="0.06" fill="#10b981">
+    <circle cx="60"   cy="60"  r="2"/>
+    <circle cx="160"  cy="40"  r="2"/>
+    <circle cx="1100" cy="60"  r="2"/>
+    <circle cx="1220" cy="40"  r="2"/>
+    <circle cx="60"   cy="340" r="2"/>
+    <circle cx="160"  cy="360" r="2"/>
+    <circle cx="1100" cy="360" r="2"/>
+    <circle cx="1220" cy="340" r="2"/>
+    <circle cx="20"   cy="200" r="2"/>
+    <circle cx="1260" cy="200" r="2"/>
+  </g>
 
-  <!-- Bell circle -->
-  <circle cx="200" cy="200" r="56" fill="#0d1117" stroke="#10b981"/>
+  <!-- Green left glow -->
+  <ellipse cx="170" cy="200" rx="150" ry="150" fill="#10b981" opacity="0.05"/>
 
-  <!-- Bell -->
-  <g class="bell-group bell-glow" filter="url(#glow)">
-    <path d="M200 158 C185 158 172 170 172 185 L172 207 L164 218 L236 218 L228 207 L228 185 C228 170 215 158 200 158Z"
+  <!-- Pulse rings -->
+  <circle class="ring1" cx="200" cy="200" r="80"  fill="none" stroke="#10b981" stroke-width="1.5"/>
+  <circle class="ring2" cx="200" cy="200" r="100" fill="none" stroke="#10b981" stroke-width="1"/>
+  <circle class="ring3" cx="200" cy="200" r="120" fill="none" stroke="#10b981" stroke-width="0.5"/>
+
+  <!-- Icon circle bg -->
+  <circle cx="200" cy="200" r="58" fill="#0d1117" stroke="#10b981" stroke-width="1.5"/>
+
+  <!-- Animated glow ring -->
+  <circle class="glow-ring" cx="200" cy="200" r="58" fill="none" stroke="#10b981" stroke-width="3" opacity="0.4"/>
+
+  <!-- Bell — centered at (200,200): spans x=164→236, y=164→236, center=(200,200) -->
+  <g class="bell-group" filter="url(#glow)">
+    <!-- Top stem — hanging point at y=164 -->
+    <rect x="196" y="164" width="8" height="10" rx="4" fill="url(#bellGrad)"/>
+    <!-- Bell body — symmetric around x=200 -->
+    <path d="M200 172 C186 172 170 182 170 196 L170 218 L164 226 L236 226 L230 218 L230 196 C230 182 214 172 200 172Z"
           fill="url(#bellGrad)"/>
-    <rect x="162" y="214" width="76" height="8" rx="4" fill="url(#bellGrad)"/>
-    <circle cx="200" cy="228" r="6" fill="#34d399"/>
+    <!-- Bottom bar -->
+    <rect x="162" y="223" width="76" height="8" rx="4" fill="url(#bellGrad)"/>
+    <!-- Clapper -->
+    <circle cx="200" cy="236" r="5.5" fill="#34d399"/>
   </g>
 
   <!-- Badge -->
   <g class="badge">
-    <circle cx="242" cy="158" r="16" fill="#059669"/>
+    <circle cx="233" cy="171" r="15" fill="#0a1f0a" stroke="#10b981" stroke-width="1.5"/>
+    <circle cx="233" cy="171" r="12" fill="#059669"/>
+    <path d="M228 171 L231.5 174.5 L239.5 164" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
-  <!-- ✅ FIXED Divider (shifted right) -->
-  <line x1="360" y1="120" x2="360" y2="280"
-        stroke="#10b981" stroke-width="0.5" opacity="0.3"/>
+  <!-- Vertical divider -->
+  <line x1="330" y1="110" x2="330" y2="290" stroke="#10b981" stroke-width="0.5" opacity="0.25"/>
 
-  <!-- Title -->
-  <text x="700" y="180" text-anchor="middle"
-        font-family="DM Sans" font-size="72" fill="white">RenewDesk</text>
+  <!-- App name -->
+  <g class="title-text">
+    <text x="660" y="188"
+          text-anchor="middle"
+          font-family="Segoe UI, Arial, sans-serif"
+          font-size="74"
+          font-weight="800"
+          fill="#ffffff"
+          letter-spacing="-2">RenewDesk</text>
+  </g>
 
-  <!-- Subtitle -->
-  <text x="700" y="230" text-anchor="middle"
-        font-family="DM Sans" font-size="22" fill="#a7f3d0">
-        Smart Subscription & Payment Tracker
-  </text>
+  <!-- Tagline -->
+  <g class="sub-text">
+    <text x="660" y="236"
+          text-anchor="middle"
+          font-family="Segoe UI, Arial, sans-serif"
+          font-size="22"
+          font-weight="400"
+          fill="#a7f3d0"
+          letter-spacing="0.5">Smart Subscription &amp; Payment Tracker</text>
+  </g>
+
+  <!-- Dots + business types -->
+  <g class="sub-text">
+    <circle class="dot1" cx="560" cy="262" r="4" fill="#10b981"/>
+    <circle class="dot2" cx="578" cy="262" r="4" fill="#10b981"/>
+    <circle class="dot3" cx="596" cy="262" r="4" fill="#10b981"/>
+    <text x="618" y="267"
+          font-family="Segoe UI, Arial, sans-serif"
+          font-size="14"
+          font-weight="400"
+          fill="#6ee7b7"
+          letter-spacing="0.5">Gyms  ·  PGs  ·  Coaching  ·  Sports Clubs</text>
+  </g>
+
+  <!-- Tech badges -->
+  <g class="tag-row">
+    <!-- React -->
+    <rect x="472" y="292" width="100" height="28" rx="14" fill="#0d2818" stroke="#10b981" stroke-width="1"/>
+    <text x="522" y="311" text-anchor="middle"
+          font-family="Segoe UI, Arial, sans-serif"
+          font-size="13" font-weight="600" fill="#10b981">React 18</text>
+
+    <!-- Vite -->
+    <rect x="588" y="292" width="90" height="28" rx="14" fill="#0d1229" stroke="#646cff" stroke-width="1"/>
+    <text x="633" y="311" text-anchor="middle"
+          font-family="Segoe UI, Arial, sans-serif"
+          font-size="13" font-weight="600" fill="#818cf8">Vite 5</text>
+
+    <!-- WhatsApp -->
+    <rect x="694" y="292" width="126" height="28" rx="14" fill="#0a1f0a" stroke="#25D366" stroke-width="1"/>
+    <text x="757" y="311" text-anchor="middle"
+          font-family="Segoe UI, Arial, sans-serif"
+          font-size="13" font-weight="600" fill="#25D366">WhatsApp</text>
+
+    <!-- Vercel -->
+    <rect x="836" y="292" width="96" height="28" rx="14" fill="#1a1a1a" stroke="#aaaaaa" stroke-width="1"/>
+    <text x="884" y="311" text-anchor="middle"
+          font-family="Segoe UI, Arial, sans-serif"
+          font-size="13" font-weight="600" fill="#cccccc">Vercel</text>
+  </g>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="396" width="1280" height="4" fill="#10b981" opacity="0.5"/>
 
 </svg>

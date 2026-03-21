@@ -128,13 +128,6 @@ Every `git push` auto-redeploys. 🚀
 React 18 · Vite 5 · lucide-react · WhatsApp deep links · Vercel
 ```
 
----
-
-## 📄 License
-
-MIT © [Your Name](https://github.com/YOUR_USERNAME)
-
----
 
 <div align="center">
 

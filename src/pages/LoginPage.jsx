@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Inp, Btn } from '../components/ui/Atoms';
 import useAuth from '../context/useAuth';
 
@@ -9,21 +9,41 @@ export default function LoginPage({ onRegister }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoaded, setGoogleLoaded] = useState(false);
+  const googleButtonRef = useRef(null);
 
   useEffect(() => {
     loadGoogleButton();
   }, []);
 
+  // Second effect to render button once script AND DOM element are ready
+  useEffect(() => {
+    if (window.google && googleButtonRef.current) {
+      renderGoogleButton();
+    }
+  }, [googleLoaded]);
+
   const loadGoogleButton = () => {
+    // Check if script is already loaded
+    if (window.google) {
+      setGoogleLoaded(true);
+      return;
+    }
+
+    // Avoid adding duplicate scripts
+    if (document.querySelector('script[src="https://accounts.google.com/gsi/client"]')) {
+      return;
+    }
+
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      if (window.google) {
-        setGoogleLoaded(true);
-        renderGoogleButton();
-      }
+      console.log('Google Sign-In script loaded successfully');
+      setGoogleLoaded(true);
+    };
+    script.onerror = () => {
+      console.error('Failed to load Google Sign-In script');
     };
     document.head.appendChild(script);
   };
@@ -32,19 +52,35 @@ export default function LoginPage({ onRegister }) {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     
     if (!clientId || clientId.trim() === '') {
-      console.log('Google Client ID not configured. To enable Google Sign-In, add VITE_GOOGLE_CLIENT_ID to .env file');
+      console.error('❌ Google Client ID not configured!');
+      console.log('To enable Google Sign-In:');
+      console.log('1. SetVITE_GOOGLE_CLIENT_ID in your .env file locally');
+      console.log('2. Add VITE_GOOGLE_CLIENT_ID to Vercel Environment Variables in dashboard');
       return;
     }
-    
-    if (window.google && document.getElementById('google_signin_button')) {
+
+    if (!window.google) {
+      console.error('Google library not loaded yet');
+      return;
+    }
+
+    if (!googleButtonRef.current) {
+      console.error('Google button container not found');
+      return;
+    }
+
+    try {
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: handleGoogleCallback,
       });
       window.google.accounts.id.renderButton(
-        document.getElementById('google_signin_button'),
+        googleButtonRef.current,
         { theme: 'outline', size: 'large', width: '100%' }
       );
+      console.log('✓ Google Sign-In button rendered successfully');
+    } catch (err) {
+      console.error('Error rendering Google button:', err);
     }
   };
 
@@ -53,13 +89,25 @@ export default function LoginPage({ onRegister }) {
     setLoading(true);
     
     try {
+      if (!response || !response.credential) {
+        console.error('Google response missing credential:', response);
+        setError('Failed to get Google credentials. Check console for details.');
+        setLoading(false);
+        return;
+      }
+
+      console.log('✓ Google sign-in response received');
       const owner = handleGoogleSignIn(response);
+      
       if (owner) {
+        console.log('✓ User signed in:', owner.email);
         setError('');
       } else {
-        setError('Failed to sign in with Google');
+        console.error('handleGoogleSignIn returned null');
+        setError('Failed to process Google sign-in');
       }
     } catch (err) {
+      console.error('Google sign-in error:', err);
       setError('Google sign-in failed: ' + err.message);
     }
     setLoading(false);
@@ -269,7 +317,7 @@ export default function LoginPage({ onRegister }) {
           <div style={{ textAlign: 'center', width: '100%' }}>
             <span style={{ color: '#64748b', fontSize: 12 }}>or sign in with:</span>
           </div>
-          <div id="google_signin_button" style={{ maxWidth: '100%' }}></div>
+          <div ref={googleButtonRef} style={{ maxWidth: '100%', width: '100%' }}></div>
         </div>
       )}
     </div>
